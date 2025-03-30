@@ -13,17 +13,19 @@ function isValidEmail(email) {
 }
 
 
-function getAge(dob) {
+function isAgeValid(dob) {
   let birthDate = new Date(dob);
   let currDate = new Date();
-  let age = currDate.getFullYear() - birthDate.getFullYear();
 
+  let age = currDate.getFullYear() - birthDate.getFullYear();
+  
+ 
   let monthDiff = currDate.getMonth() - birthDate.getMonth();
   if (monthDiff < 0 || (monthDiff === 0 && currDate.getDate() < birthDate.getDate())) {
     age--;
   }
 
-  return age;
+  return age >= 18 && age <= 55;
 }
 
 
@@ -50,8 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
 document.querySelector("form").addEventListener("submit", (e) => {
   e.preventDefault();
 
-  let age = getAge(dobInp.value);
-
   if (!isValidEmail(emailInp.value)) {
     emailInp.setCustomValidity("Please enter a valid email address.");
     emailInp.reportValidity();
@@ -60,8 +60,8 @@ document.querySelector("form").addEventListener("submit", (e) => {
     emailInp.setCustomValidity("");
   }
 
-  if (age < 18 || age > 55) {
-    dobInp.setCustomValidity("Age should be between 18 and 55.");
+  if (!isAgeValid(dobInp.value)) {
+    dobInp.setCustomValidity("Age must be between 18 and 55.");
     dobInp.reportValidity();
     return;
   } else {
