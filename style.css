@@ -1,0 +1,64 @@
+.outer-box{
+  width: 20rem;
+  height: 28rem;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  background-color: rgb(250, 245, 237);
+}
+body{
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+label{
+  font-size: 20px;
+}
+input{
+  margin-top: 5px;
+  padding: 5px 10px;
+  font-size: 18px;
+  border: none;
+  background-color: rgba(233, 232, 232, 0.753);
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+
+form #name,form #email,form #password,form #dob{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+[type="submit"]{
+  background-color: rgb(9, 167, 9);
+  color: white;
+  margin-top: 10px;
+  padding: 6px 20px;
+}
+
+table{
+  width: 60rem;
+  border-collapse: collapse;
+  margin: auto;
+  margin-top: 4rem;
+}
+th{
+  font-size: 25px;
+  font-weight: 500;
+}
+table td{
+  border: 1px solid black;
+  width: 50rem;
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 18px;
+}
+caption{
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+
+
