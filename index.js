@@ -3,23 +3,14 @@ let emailInp = document.getElementById("email");
 let passwordInp = document.getElementById("password");
 let dobInp = document.getElementById("dob");
 let tAndC = document.getElementById("tc");
-
 let tableBody = document.querySelector("tbody");
-
-
-function isValidEmail(email) {
-  let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailRegex.test(email);
-}
 
 
 function isAgeValid(dob) {
   let birthDate = new Date(dob);
   let currDate = new Date();
-
   let age = currDate.getFullYear() - birthDate.getFullYear();
-  
- 
+
   let monthDiff = currDate.getMonth() - birthDate.getMonth();
   if (monthDiff < 0 || (monthDiff === 0 && currDate.getDate() < birthDate.getDate())) {
     age--;
@@ -29,17 +20,34 @@ function isAgeValid(dob) {
 }
 
 
+dobInp.addEventListener("input", () => {
+  if (isAgeValid(dobInp.value)) {
+    dobInp.setCustomValidity("");
+  }
+});
+
+
+function isValidEmail(email) {
+  let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email);
+}
+
+
+emailInp.addEventListener("input", () => emailInp.setCustomValidity(""));
+
+
 function addUserToTable(user) {
-  let row = `
-        <tr>
-          <td>${user.name}</td>
-          <td>${user.email}</td>
-          <td>${user.password}</td>
-          <td>${user.dob}</td>
-          <td>${user.tc ? "true" : "false"}</td>
-        </tr>
+  let row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td>${user.name}</td>
+    <td>${user.email}</td>
+    <td>${user.password}</td>
+    <td>${user.dob}</td>
+    <td>${user.tc ? "true" : "false"}</td>
   `;
-  tableBody.innerHTML += row;
+
+  tableBody.appendChild(row);
 }
 
 
@@ -56,8 +64,6 @@ document.querySelector("form").addEventListener("submit", (e) => {
     emailInp.setCustomValidity("Please enter a valid email address.");
     emailInp.reportValidity();
     return;
-  } else {
-    emailInp.setCustomValidity("");
   }
 
   if (!isAgeValid(dobInp.value)) {
@@ -69,14 +75,14 @@ document.querySelector("form").addEventListener("submit", (e) => {
   }
 
   let newUser = {
-    name: nameInp.value,
-    email: emailInp.value,
-    password: passwordInp.value,
+    name: nameInp.value.trim(),
+    email: emailInp.value.trim(),
+    password: passwordInp.value.trim(),
     dob: dobInp.value,
     tc: tAndC.checked,
   };
 
-
+ 
   let storedUsers = JSON.parse(localStorage.getItem("users")) || [];
   storedUsers.push(newUser);
   localStorage.setItem("users", JSON.stringify(storedUsers));
@@ -85,9 +91,5 @@ document.querySelector("form").addEventListener("submit", (e) => {
   addUserToTable(newUser);
 
 
-  nameInp.value = "";
-  emailInp.value = "";
-  passwordInp.value = "";
-  dobInp.value = "";
-  tAndC.checked = false;
+  document.querySelector("form").reset();
 });
