@@ -1,66 +1,93 @@
-let nameInp = document.getElementById("name")
-let emailInp = document.getElementById("email")
-let passwordInp = document.getElementById("password")
-let dobInp = document.getElementById("dob")
-let tAndC = document.getElementById("tc")
+let nameInp = document.getElementById("name");
+let emailInp = document.getElementById("email");
+let passwordInp = document.getElementById("password");
+let dobInp = document.getElementById("dob");
+let tAndC = document.getElementById("tc");
 
-let nametb = document.getElementById("nametb")
-let emailtb = document.getElementById("emailtb")
-let passwordtb = document.getElementById("passwordtb")
-let dobtb = document.getElementById("dobtb")
-let tctb = document.getElementById("tctb")
+let tableBody = document.querySelector("tbody");
+
+
+function isValidEmail(email) {
+  let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email);
+}
+
+
+function getAge(dob) {
+  let birthDate = new Date(dob);
+  let currDate = new Date();
+  let age = currDate.getFullYear() - birthDate.getFullYear();
+
+  let monthDiff = currDate.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && currDate.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age;
+}
+
+
+function addUserToTable(user) {
+  let row = `
+        <tr>
+          <td>${user.name}</td>
+          <td>${user.email}</td>
+          <td>${user.password}</td>
+          <td>${user.dob}</td>
+          <td>${user.tc ? "true" : "false"}</td>
+        </tr>
+  `;
+  tableBody.innerHTML += row;
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  let storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  storedUsers.forEach(addUserToTable);
+});
 
 
 document.querySelector("form").addEventListener("submit", (e) => {
-  e.preventDefault()
+  e.preventDefault();
 
-  let currYear = new Date().getFullYear();
+  let age = getAge(dobInp.value);
 
-  let [year, month, day] = dobInp.value.split("-").map(Number); 
-  let age = currYear - year;
-
-  console.log(age)
-
-  if(age>=18 && age<=55){
-    dobInp.setCustomValidity("")
-  }else{
-    dobInp.setCustomValidity("the value must be 09/11/1967 or later")
-    dobInp.reportValidity(); 
-    return
+  if (!isValidEmail(emailInp.value)) {
+    emailInp.setCustomValidity("Please enter a valid email address.");
+    emailInp.reportValidity();
+    return;
+  } else {
+    emailInp.setCustomValidity("");
   }
-  
-  let allInp = {
+
+  if (age < 18 || age > 55) {
+    dobInp.setCustomValidity("Age should be between 18 and 55.");
+    dobInp.reportValidity();
+    return;
+  } else {
+    dobInp.setCustomValidity("");
+  }
+
+  let newUser = {
     name: nameInp.value,
     email: emailInp.value,
     password: passwordInp.value,
     dob: dobInp.value,
-    tc: tAndC.checked
-  }
+    tc: tAndC.checked,
+  };
 
-  console.log(allInp)
-  let toStr = JSON.stringify(allInp)
-  localStorage.setItem("user", toStr)
 
-  let obj = JSON.parse(localStorage.getItem("user"))
+  let storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  storedUsers.push(newUser);
+  localStorage.setItem("users", JSON.stringify(storedUsers));
 
-  let tbl = document.querySelector("tbody")
 
-  let tbody = `
-        <tr>
-          <td >${obj.name}</td>
-          <td >${obj.email}</td>
-          <td >${obj.password}</td>
-          <td >${obj.dob}</td>
-          <td >${obj.tc ? "true" : "false"}</td>
-        </tr>
-  `
-  nameInp.value = ""
-  emailInp.value = ""
-  passwordInp.value = ""
-  dobInp.value = ""
-  tAndC.checked = ""
+  addUserToTable(newUser);
 
-  tbl.innerHTML += tbody
 
-})
-
+  nameInp.value = "";
+  emailInp.value = "";
+  passwordInp.value = "";
+  dobInp.value = "";
+  tAndC.checked = false;
+});
